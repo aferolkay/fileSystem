@@ -35,36 +35,27 @@ fileItem* fileItems;
 FAT* table;
 
 void create(){
-    /* allocate memory for File Allocation Table*/
-    table = malloc( sizeof(FAT) );
-    memset( table, 0, sizeof(FAT) );
-    memset( table, 0xFFFFFFFF , sizeof(int32_t));
-
-    int i;
-    /* allocate memory for items list*/
-    fileItems = malloc( sizeof(fileItem) * NUM_OF_ITEMS );
-    for( i=0 ; i < NUM_OF_ITEMS ; i++ ){
-        strcpy( fileItems[i].fileName , "NULL");
-        fileItems[i].fileSize = 0;
-        fileItems[i].firstBlock = 0;
-    }
-
-    /* allocate memory for data blocks*/
-    blocks = malloc( sizeof(block) * NUM_OF_BLOCKS );
-    memset( blocks, 0, sizeof(sizeof(block) * NUM_OF_BLOCKS) );
-
     FILE *file;
     file = fopen("disk","w+");
 
     // init File Allocation Table
-    fwrite( &table , sizeof(FAT) , 1 , file);
+    table = malloc( sizeof(FAT) );
+    memset( table, 0, sizeof(FAT) );
+    memset( table, 0xFFFFFFFF , sizeof(int32_t));      
+    fwrite( table , sizeof(FAT) , 1 , file);
 
     // init Items List
+    fileItems = malloc( sizeof(fileItem) * NUM_OF_ITEMS );
     for(int i=0 ; i < NUM_OF_ITEMS ; i++ ){
+        strcpy( fileItems[i].fileName , "NULL");
+        fileItems[i].fileSize = 0;
+        fileItems[i].firstBlock = 0;
         fwrite( &(fileItems[i]) , sizeof(fileItem) , 1 , file);
     }
 
     // init Data Blocks
+    blocks = malloc( sizeof(block) * NUM_OF_BLOCKS );
+    memset( blocks, 0, sizeof(sizeof(block) * NUM_OF_BLOCKS) );
     for(int i=0 ; i < NUM_OF_BLOCKS ; i++ ){
         fwrite( &(blocks[i]) , sizeof(block) , 1 , file);
     }
@@ -75,23 +66,19 @@ void create(){
 void mount(){
     FILE *file;
     file = fopen("disk","r");
-    
-    /* allocate memory for File Allocation Table*/
-    table = malloc( sizeof(FAT) );
-    // init File Allocation Table
-    fread( &table , sizeof(FAT) , 1 , file);
 
-    
-    /* allocate memory for items list*/
-    fileItems = malloc( sizeof(fileItem) * NUM_OF_ITEMS );
+    // init File Allocation Table
+    table = malloc( sizeof(FAT) );
+    fread( table , sizeof(FAT) , 1 , file);
+
     // init Items List
+    fileItems = malloc( sizeof(fileItem) * NUM_OF_ITEMS );
     for(int i=0 ; i < NUM_OF_ITEMS ; i++ ){
         fread( &(fileItems[i]) , sizeof(fileItem) , 1 , file);
     }
 
-    /* allocate memory for data blocks*/
-    blocks = malloc( sizeof(block) * NUM_OF_BLOCKS );
     // init Data Blocks
+    blocks = malloc( sizeof(block) * NUM_OF_BLOCKS );
     for(int i=0 ; i < NUM_OF_BLOCKS ; i++ ){
         fread( &(blocks[i]) , sizeof(block) , 1 , file);
     }
@@ -119,9 +106,12 @@ void printFileList(){
 
 
 int main(int argc , char* arg[]){
-    mount();
+    create();
     printFAT();
     printFileList();
-
+    
+    free(blocks);
+    free(fileItems);
+    free(table);
     return 0;
 }
