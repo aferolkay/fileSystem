@@ -5,6 +5,11 @@
 #include <math.h>
 #include "fileSystem.h"
 
+/*
+*
+* FOR COMPILATION : gcc -o myfs myfs.c fileSystem.c  -lm 
+*
+*/
 
 block* blocks;
 fileItem* fileItems;
@@ -85,6 +90,7 @@ void demount(){
 
 /* printf FAT into fat.txt */
 void printFAT(){
+    mount();
     FILE* file = fopen("fat.txt","w");
     char buffer[80];
 
@@ -98,10 +104,12 @@ void printFAT(){
     }
     fclose(file);
     printf(" File Allocation Table of the disk has been successfully written to the file <fat.txt>\n");
+    demount();
 }
 
 /* printf file list into filelist.txt */
 void printFileList(){
+    mount();
     FILE* file = fopen("filelist.txt","w");
     char buffer[300];
 
@@ -113,6 +121,7 @@ void printFileList(){
     }
     fclose(file);
     printf(" File List informaton of the disk has been successfully written to the file <filelist.txt>\n");
+    demount();
 }
 
 /* works as intented*/

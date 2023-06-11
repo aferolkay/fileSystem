@@ -1,6 +1,12 @@
-#include "../../fileSystem-main/fileSystem.h"
+#include "fileSystem.h"
 #include <stdio.h>
 #include <string.h>
+
+/*
+*
+* FOR COMPILATION : gcc -o myfs myfs.c fileSystem.c  -lm 
+*
+*/
 
 int main(int argc, char* argv[]) {
     if (argc < 3) {
