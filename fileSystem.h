@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdint.h>
+#include <math.h>
 #define NUM_OF_ITEMS 128
 #define NUM_OF_ADDRESSES 4096
 #define NUM_OF_BLOCKS 4096
-
+#define FAT_START 0  
+#define FILE_LIST_START 16384 
+#define DATA_START 49152
+#define FILE_END 2146304
 struct block{
     char data[512];
 };
@@ -54,3 +58,7 @@ void printFileList();
 void printFAT();
 
 void defragment();
+
+void mount();
+
+void demount();
